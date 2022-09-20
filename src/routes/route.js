@@ -12,6 +12,9 @@ const userController = require ("../controller/userController");
 //--- User Register Api--
 router.post('/register' , userController.register)
 
+//--- User Login Api--
+router.post('/login' , userController.userLogin)
+
 
 
 

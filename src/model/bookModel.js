@@ -5,33 +5,35 @@ const moment = require('moment')
 const bookSchema = new mongoose.Schema({
 
     title: {
-        type : string,
+        type : String,
         required : true,
         unique: true,
         trim : true
     },
     excerpt: {
-        type: string, 
+        type: String, 
         required : true,
         trim : true
     },
     userId : {
         type : ObjectId,
         ref : "user",  // ref to userModel 
-        required : true
-    },ISBN: {
-        type: string, 
+        required : true,
+        trim : true
+    },
+    ISBN: {
+        type: String, 
         unique: true,
         required: true,
         trim : true
     },
     category: {
-        type: string, 
+        type: String, 
         required : true,
         trim : true
     },
     subcategory: {
-        type: [string], 
+        type: [String], 
         required: true,
         trim: true
     },
@@ -52,11 +54,12 @@ const bookSchema = new mongoose.Schema({
     releasedAt: {
         type : Date, 
         required: true,
-        date :  Date.now()   //format("YYYY-MM-DD")}
+        date :  Date.now,   //format("YYYY-MM-DD")}
+        trim : true
     }  
 
     
-}, {timestamp : true});
+}, {timestamps: true});
 
 
 
