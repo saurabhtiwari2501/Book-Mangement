@@ -3,12 +3,12 @@ const jwt = require('jsonwebtoken')
 
 
 
-const {isValidBody, isValid, isValidEmail, isValidpassword,  isValidPhone} = require('../validator/validation')
+const {isValidBody, isValid, isValidEmail, isValidpassword,  isValidPhone, isValidAdd} = require('../validator/validation')
 
 
 //<<======================================  Registered User =================================================>>//
 
-const register = async (req, res) => {
+const createUser = async (req, res) => {
     try {
 
         let data = req.body;
@@ -44,7 +44,7 @@ const register = async (req, res) => {
         }
 
         if(!address) return res.status(400).send({status: false, message : "Address is manadatory"})
-        if(!isValid(address)) return res.status(400).send({ status: false, message: "Please Enter Valid Address" })
+        if(!isValidAdd(address)) return res.status(400).send({ status: false, message: "Please Enter Valid Address" })
 
         let createUser = await userModel.create(data)
         res.status(201).send({status: true, message: "User Register Successfully" , data : createUser})
@@ -79,7 +79,7 @@ const userLogin = async (req, res) => {
             "Book-Management-Project", { expiresIn: '1d' });
             
     
-        return res.status(201).send({ status: true, message: "User Login Successfully" , token : token})
+        return res.status(201).send({ status: true, message: "User Login Successfully" , token : token })
     }
     catch (err) {
         res.status(500).send({ status: false, message: err.message })
@@ -91,4 +91,4 @@ const userLogin = async (req, res) => {
 
 
 
-module.exports = { register, userLogin };
+module.exports = { createUser, userLogin };
