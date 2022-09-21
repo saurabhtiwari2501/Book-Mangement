@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken')
 
 const {isValidBody, isValid, isValidEmail, isValidpassword,  isValidPhone, isValidAdd} = require('../validator/validation')
 
-
+ 
 //<<======================================  Registered User =================================================>>//
 
 const createUser = async (req, res) => {
