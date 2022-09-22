@@ -30,7 +30,7 @@ const authenticate = async (req, res, next) => {
 const authorise = async (req, res, next) => {
     try {
         let token = req.headers["x-api-key"]
-        let decodeToken = jwt.verify(token, "FunctionUp-Blog-Library")
+        let decodeToken = jwt.verify(token, "Book-Management-Project")
         let userLoggedIn = decodeToken.userId
 
         let bookId = req.params.bookId

@@ -19,8 +19,7 @@ const reviewSchema = new mongoose.Schema({
     },
     reviewedAt: { 
         type: Date,
-        required: true,
-        date: Date.now
+        required: true
      },
      rating: {
         type: Number, 

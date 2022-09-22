@@ -15,9 +15,14 @@ const isValidISBN = function (isbn){
 
 //<<----------------Validation for string ---------------->>
 const isValid = function (value) {
-    return  (/^[a-zA-Z0-9]+(([\'\,\.\- ][a-zA-Z0-9])?[a-zA-Z0-9]*)*$/).test(value)
+    return  (/^[a-zA-Z .]+$/).test(value)
   }
 
+  //<<----------------Validation for review ---------------->>
+const isValidReview = function (review) {
+    return (/^[a-zA-Z_.-\s]+$/).test(review)
+    
+  };
 
 //<<----------------Validation for Email ---------------->>  
 const isValidEmail = function (email) {
@@ -68,7 +73,18 @@ const isValidAdd = function (value) {
 
 //<<============================Imported Validation Function Modules ===========================>>//
 
-module.exports = {isValidBody, isValid, isValidEmail,  isValidPhone, isValidpassword, isValidISBN , isValidDate ,isValidObjectId, isValidAdd}
+module.exports = {
+                isValidBody, 
+                isValid,
+                isValidEmail,
+                isValidPhone, 
+                isValidpassword, 
+                isValidISBN , 
+                isValidDate ,
+                isValidObjectId, 
+                isValidAdd,
+                isValidReview
+            }
 
 
 
