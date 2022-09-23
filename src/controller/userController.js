@@ -75,12 +75,13 @@ const userLogin = async (req, res) => {
         let token = jwt.sign(
             { userId: user._id.toString()},
             "Book-Management-Project",
-            { expiresIn: '2d' })
-
+            { expiresIn: '1d' })
+        
+       
 
         let decode = jwt.verify(token, "Book-Management-Project")
-        // decode.iat = moment().format()
-        // decode.exp 
+        decode.iat  = moment().format()
+        decode.exp  = moment().format()
         return res.status(201).send({ status: true, message: "User Login Successfully", decode, token: token })
 
     }

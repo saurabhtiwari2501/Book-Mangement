@@ -32,13 +32,6 @@ const createBook = async (req, res) => {
         }
 
         if (!userId) return res.status(400).send({ status: false, message: "UserId is manadatory" })
-        if (!isValidObjectId(userId)) {
-            return res.status(400).send({ status: false, message: "Please Enter Valid User Id" })
-        }
-
-        if (userId !== req.token.userId) {
-            return res.status(403).send({ status: false, msg: "You are not Authorised to Create Book Data." })
-        }
 
         if (!ISBN) return res.status(400).send({ status: false, message: "ISBN is manadatory" })
         if (!isValidISBN(ISBN)) return res.status(400).send({ status: false, message: "Please Enter Valid ISBN" })
@@ -73,25 +66,12 @@ const getBook = async (req, res) => {
     try {
         let data = req.query
         let { userId, category, subcategory } = data
-        // if(isValidBody(data)) { 
-        // let getbooks =  await bookModel.find({ isDeleted : false }).sort({ title: 1 }).select
-        // return res.status(400).send({ status: false, message: "Please provide userId" }) 
-        // }
-
-        // if (data.hasOwnProperty("userId") /*&& !userId)*/ { return res.status(400).send({ status: false, message: "Please provide userId" }) }
-        // // if (data.hasOwnProperty("subcategory") && !subcategory) { return res.status(400).send({ status: false, message: "Please provide subcategory" }) }
-        // if (userId) {
-        //     if (!isValidObjectId(userId)) { return res.status(400).send({ status: false, message: "Please Enter Valid UserId" }) }
-        // }
-
-        if (data.hasOwnProperty('userId')) {
-            if (!isValidObjectId(data.userId)) return res.status(400).send({ status: false, msg: "Enter a valid user Id" })
-            let { ...tempData } = data
-            delete (tempData.userId)
-
-        }
+       
+        if (data.hasOwnProperty("userId") && !userId) { return res.status(400).send({ status: false, message: "Please provide userId" }) }
+        if (data.hasOwnProperty("category") && !category) { return res.status(400).send({ status: false, message: "Please provide category" }) }
+        if (data.hasOwnProperty("subcategory") && !subcategory) { return res.status(400).send({ status: false, message: "Please provide subcategory" }) }
+            
         data.isDeleted = false
-
 
         let filter = { isDeleted: false }
         if (userId) filter.userId = userId
@@ -147,7 +127,7 @@ const updateBook = async function (req, res) {
         let checkBookId = await bookModel.findById(getBookId)
         if (!checkBookId) return res.status(400).send({ status: false, message: "Book not found" })
         if (checkBookId.isDeleted)
-            return res(404).send({ status: false, message: "Book not found and may be deleted" })
+            return res.status(404).send({ status: false, message: "Book not found and may be deleted" })
         //body validation
         let data = req.body
         if (isValidBody(data))
@@ -172,7 +152,7 @@ const updateBook = async function (req, res) {
         }
         let updatebookData = await bookModel.findByIdAndUpdate(
             { _id: getBookId }, data, { new: true })
-        return res.send({ status: true, message: "Success", data: updatebookData })
+        return res.status(200).send({ status: true, message: "Success", data: updatebookData })
 
 
     } catch (err) {

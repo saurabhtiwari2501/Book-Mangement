@@ -20,10 +20,10 @@ router.post('/login', userController.userLogin)
 router.post('/books', midAuth.authenticate, midAuth.authorise, bookController.createBook)
 
 //---- Get Book list by bookId in params Api ---
-router.get('/books', midAuth.authenticate, bookController.getBook)
+router.get('/books',  bookController.getBook)
 
 //--- Get Book with Review by query-params Api---
-router.get('/books/:bookId', midAuth.authenticate, bookController.getBookById)
+router.get('/books/:bookId', bookController.getBookById)
 
 //-- Update Book by Params Api ---
 router.put('/books/:bookId', midAuth.authenticate, midAuth.authorise,bookController.updateBook)
@@ -33,6 +33,12 @@ router.delete('/books/:bookId', midAuth.authenticate, midAuth.authorise, bookCon
 
 //--- Create Review Api---
 router.post('/books/:bookId/review', midAuth.authenticate, reviewController.createReview)
+
+//--- Update Review Api---
+router.put('/books/:bookId/review/:reviewId', reviewController.updateReview)
+
+//--- Delete Review Api---
+router.delete('/books/:bookId/review/:reviewId', midAuth.authenticate, midAuth.authorise, reviewController.deleteReview)
 
 
 
