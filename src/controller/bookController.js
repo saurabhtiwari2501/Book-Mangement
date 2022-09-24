@@ -1,5 +1,4 @@
 const bookModel = require('../model/bookModel');
-const userModel = require('../model/userModel')
 const reviewModel = require('../model/reviewModel')
 
 
@@ -23,10 +22,11 @@ const createBook = async (req, res) => {
         if (uniqueTitle) {
             return res.status(400).send({ status: false, message: "Book Title is already Existed" })
         }
-        if (!isValid(title)) return res.status(400).send({ status: false, message: "Please Enter Valid Title" })
+        if (!isValid(title) || !isValidAdd(title)) return res.status(400).send({ status: false, message: "Please Enter Valid Title" })
+
 
         if (!excerpt) return res.status(400).send({ status: false, message: "Excerpt is manadatory" })
-        if (!isValid(excerpt)) return res.status(400).send({ status: false, message: "Please Enter Valid excerpt" })
+        if (!isValid(excerpt) || !isValidAdd(excerpt)) return res.status(400).send({ status: false, message: "Please Enter Valid excerpt" })
         if (excerpt.length < 5) {
             return res.status(400).send({ status: false, message: "Excerpt length should be more than 5 characters" })
         }
@@ -41,10 +41,10 @@ const createBook = async (req, res) => {
         }
 
         if (!category) return res.status(400).send({ status: false, message: "Category is manadatory" })
-        if (!isValid(category)) return res.status(400).send({ status: false, message: "Please Enter Valid Category" })
+        if (!isValid(category) || !isValidAdd(category) ) return res.status(400).send({ status: false, message: "Please Enter Valid Category" })
 
         if (!subcategory) return res.status(400).send({ status: false, message: "Subcategory is manadatory" })
-        if (!isValid(subcategory)) return res.status(400).send({ status: false, message: "Please Enter Valid Subcategory" })
+        if (!isValid(subcategory) || !isValidAdd(subcategory)) return res.status(400).send({ status: false, message: "Please Enter Valid Subcategory" })
 
         if (!releasedAt) return res.status(400).send({ status: false, message: "ReleaseAt is manadatory" })
         if (!isValidDate(releasedAt)) return res.status(400).send({ status: false, message: "Please Enter Date in Valid format Ex- [YYYY-MM-DD]" })
@@ -152,7 +152,7 @@ const updateBook = async function (req, res) {
         }
         let updatebookData = await bookModel.findByIdAndUpdate(
             { _id: getBookId }, data, { new: true })
-        return res.status(200).send({ status: true, message: "Success", data: updatebookData })
+        return res.status(200).send({ status: true, message: "Book Updated Successfully", data: updatebookData })
 
 
     } catch (err) {

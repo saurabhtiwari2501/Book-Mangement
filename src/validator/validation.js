@@ -15,7 +15,7 @@ const isValidISBN = function (isbn){
 
 //<<----------------Validation for string ---------------->>
 const isValid = function (value) {
-    return  (/^[a-zA-Z .]+$/).test(value)
+    return  (/^[a-zA-Z ]*$/).test(value)
   }
 
   //<<----------------Validation for review ---------------->>
@@ -31,7 +31,7 @@ const isValidEmail = function (email) {
 
 //<<----------------Validation for password ---------------->>  
 const isValidpassword = function (pass) {
-    return (/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,15}$/).test(pass);
+    return (/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,15}$/).test(pass);
 }
 
 
@@ -65,13 +65,13 @@ const isValidAdd = function (value) {
     return true
   }
 
-// const verifyId = function (Id) {
-//     if (!mongoose.Types.ObjectId.isValid(Id)) {
-//       return false
-//     }
-//     return (true)
-//   }
+  
 
+//   const isValidString = function (value) {
+//     if (typeof value === "undefined" || value === null) return false;
+//     if (typeof value === "string" && value.trim().length === 0) return false;
+//     return true;
+//   };
 
 // ^[0-9]{6}   -- for pincode
 
@@ -91,6 +91,7 @@ module.exports = {
                 isValidAdd,
                 isValidReview,
                 isValidRating
+                
             }
 
 

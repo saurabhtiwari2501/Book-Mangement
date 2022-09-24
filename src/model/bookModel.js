@@ -43,7 +43,8 @@ const bookSchema = new mongoose.Schema({
         default: 0   //comment: Number,  // Holds number of reviews of this book
     },
     deletedAt: {
-        type: Date         //  when the document is deleted
+        type: Date,  
+        default: null       //  when the document is deleted
     },
     isDeleted: {
         type: Boolean,

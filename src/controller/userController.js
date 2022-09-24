@@ -41,7 +41,7 @@ const createUser = async (req, res) => {
 
         if (!password) return res.status(400).send({ status: false, message: "Password is manadatory" })
         if (!isValidpassword(password)) {
-            return res.status(400).send({ status: false, message: "Please Enter Valid Password It should be length(6-15) character [Ex - Abc@123]" })
+            return res.status(400).send({ status: false, message: "Please Enter Valid Password It should be length(8-15) character [Ex - Abcd1234]" })
         }
 
         if (!address) return res.status(400).send({ status: false, message: "Address is manadatory" })
