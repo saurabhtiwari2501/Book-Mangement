@@ -4,7 +4,7 @@ const moment = require('moment')
 
 
 
-const { isValidBody, isValid, isValidEmail, isValidpassword, isValidPhone, isValidAdd } = require('../validator/validation')
+const { isValidBody, isValid, isValidEmail, isValidpassword, isValidPhone,  isValidPin, isValidFid } = require('../validator/validation')
 
 
 //<<======================================  Registered User =================================================>>//
@@ -43,10 +43,21 @@ const createUser = async (req, res) => {
         if (!isValidpassword(password)) {
             return res.status(400).send({ status: false, message: "Please Enter Valid Password It should be length(8-15) character [Ex - Abcd1234]" })
         }
+        if (address) {
 
-        if (!address) return res.status(400).send({ status: false, message: "Address is manadatory" })
-        if (!isValidAdd(address)) return res.status(400).send({ status: false, message: "Please Enter Valid Address" })
+            if (!(address.street)) return res.status(400).send({ status: false, message: "street is manadatory" })
+            if (!isValidFid((address.street).trim())) return res.status(400).send({ status: false, message: "Street should be Valid" })
 
+
+            if (!(address.city)) return res.status(400).send({ status: false, message: "City is manadatory" })
+            if (!isValid((address.city).trim())) return res.status(400).send({ status: false, message: "City should be Valid" })
+
+
+            if (!(address.pincode)) return res.status(400).send({ status: false, message: "Pincode is mandatory" })
+            if (!isValidPin((address.pincode).trim())) return res.status(400).send({ status: false, message: "Invalid Pincode" })
+
+
+        }
         let createUser = await userModel.create(data)
         res.status(201).send({ status: true, message: "User Register Successfully", data: createUser })
 
@@ -73,15 +84,13 @@ const userLogin = async (req, res) => {
         if (!user)
             return res.status(401).send({ status: false, message: "Your Credencial is not valid." })
         let token = jwt.sign(
-            { userId: user._id.toString()},
-            "Book-Management-Project",
-            { expiresIn: '1d' })
-        
-       
+            {
+                userId: user._id.toString(),
+            },
+            "Book-Management-Project", { expiresIn: '1h' });
 
         let decode = jwt.verify(token, "Book-Management-Project")
-        decode.iat  = moment().format()
-        decode.exp  = moment().format()
+    
         return res.status(201).send({ status: true, message: "User Login Successfully", decode, token: token })
 
     }
@@ -93,6 +102,6 @@ const userLogin = async (req, res) => {
 
 
 
-
+// <<====================================== Exported Modules =========================>>//
 
 module.exports = { createUser, userLogin };

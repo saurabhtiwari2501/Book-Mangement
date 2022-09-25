@@ -1,28 +1,34 @@
 const mongoose = require('mongoose')
 
+
 //<<----------------Validation for Body ---------------->>
 const isValidBody = function (body) {
     return Object.keys(body).length == 0
 }
 
 
-//<<----------------Validation for ISBN ---------------->>
-const isValidISBN = function (isbn){
-    return (/^(?=(?:\D*\d){10}(?:(?:\D*\d){3})?$)[\d-]+$/).test(isbn) 
-}
+//<<----------------Validation for pincode ---------------->>
+const isValidPin = function (pincode) {
+    return (/^[1-9][0-9]{5}$/).test(pincode)
+};
 
+//<<----------------Validation for ISBN ---------------->>
+const isValidISBN = function (isbn) {
+    return (/^(?=(?:\D*\d){10}(?:(?:\D*\d){3})?$)[\d-]+$/).test(isbn)
+}
 
 
 //<<----------------Validation for string ---------------->>
 const isValid = function (value) {
-    return  (/^[a-zA-Z ]*$/).test(value)
-  }
+    return (/^[a-zA-Z ]*$/).test(value)
+}
 
-  //<<----------------Validation for review ---------------->>
+//<<----------------Validation for review ---------------->>
 const isValidReview = function (review) {
     return (/^[a-zA-Z_.-\s]+$/).test(review)
-    
-  };
+
+};
+
 
 //<<----------------Validation for Email ---------------->>  
 const isValidEmail = function (email) {
@@ -38,7 +44,7 @@ const isValidpassword = function (pass) {
 
 //<<----------------Validation for Mobile No. ---------------->>
 const isValidPhone = function (phone) {
-    return (/^([0|\+[0-9]{1,5})?([7-9][0-9]{9})$/).test(phone);
+    return (/^([0|\+[0-9]{1,5})?([6-9][0-9]{9})$/).test(phone);
 }
 
 
@@ -60,39 +66,48 @@ const isValidRating = function (rating) {
 
 
 const isValidAdd = function (value) {
-    if (typeof value == undefined || value == null) return false
+    if (typeof value == "undefined" || value == null || typeof value === "boolean" || typeof value === "number") return false
     if (typeof value == "string" && value.trim().length == 0) return false
     return true
-  }
-
-  
-
-//   const isValidString = function (value) {
-//     if (typeof value === "undefined" || value === null) return false;
-//     if (typeof value === "string" && value.trim().length === 0) return false;
-//     return true;
-//   };
-
-// ^[0-9]{6}   -- for pincode
+}
 
 
+const isValidFid = (value) => {
+    if (typeof value === "undefined" || value === null || typeof value === "boolean") return false;
+    if (value.length === 0) return false;
+    return true;
+};
 
-//<<============================Imported Validation Function Modules ===========================>>//
+const isValidtitle = function (value) {
+    if (typeof value == "undefined" || value == null || typeof value === "boolean") return false
+    if (typeof value === "number" && value.trim().length == 0) return false
+    return true
+}
+
+
+
+
+//<<============================Exported Validation Function Modules ===========================>>//
 
 module.exports = {
-                isValidBody, 
-                isValid,
-                isValidEmail,
-                isValidPhone, 
-                isValidpassword, 
-                isValidISBN , 
-                isValidDate ,
-                isValidObjectId, 
-                isValidAdd,
-                isValidReview,
-                isValidRating
-                
-            }
+    isValidBody,
+    isValid,
+    isValidEmail,
+    isValidPhone,
+    isValidpassword,
+    isValidISBN,
+    isValidDate,
+    isValidObjectId,
+    isValidAdd,
+    isValidReview,
+    isValidRating,
+    isValidPin,
+    isValidFid,
+    isValidtitle
+
+
+
+}
 
 
 
