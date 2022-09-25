@@ -1,10 +1,17 @@
 const mongoose = require('mongoose')
 
 
+
 //<<----------------Validation for Body ---------------->>
 const isValidBody = function (body) {
     return Object.keys(body).length == 0
 }
+
+
+//<<----------------Validation for ObjectId check in DB ---------------->>
+const isValidObjectId = function (ObjectId) {
+    return mongoose.Types.ObjectId.isValid(ObjectId)
+};
 
 
 //<<----------------Validation for pincode ---------------->>
@@ -54,10 +61,7 @@ const isValidDate = function (date) {
     return (/^[0-9]{4}-(((0[13578]|(10|12))-(0[1-9]|[1-2][0-9]|3[0-1]))|(02-(0[1-9]|[1-2][0-9]))|((0[469]|11)-(0[1-9]|[1-2][0-9]|30)))$/).test(date)
 }
 
-//<<----------------Validation for ObjectId check in DB ---------------->>
-const isValidObjectId = function (ObjectId) {
-    return mongoose.Types.ObjectId.isValid(ObjectId)
-};
+
 
 //<<----------------Validation for rating ---------------->>
 const isValidRating = function (rating) {
@@ -70,7 +74,6 @@ const isValidAdd = function (value) {
     if (typeof value == "string" && value.trim().length == 0) return false
     return true
 }
-
 
 const isValidFid = (value) => {
     if (typeof value === "undefined" || value === null || typeof value === "boolean") return false;
@@ -104,9 +107,6 @@ module.exports = {
     isValidPin,
     isValidFid,
     isValidtitle
-
-
-
 }
 
 

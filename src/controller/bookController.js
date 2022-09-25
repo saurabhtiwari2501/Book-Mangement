@@ -1,5 +1,6 @@
 const bookModel = require('../model/bookModel');
 const reviewModel = require('../model/reviewModel')
+const userModel = require('../model/userModel')
 
 
 
@@ -16,9 +17,10 @@ const createBook = async (req, res) => {
         let { title, excerpt, userId, ISBN, category, subcategory, releasedAt } = data
 
         if (isValidBody(data)) return res.status(400).send({ status: false, message: "Please Provide Data to Create Book" })
-        title = title.toUpperCase()
+
+
         if (!title) return res.status(400).send({ status: false, message: "Title is manadatory" })
-        if(!isValidtitle(title)) return res.status(400).send({ status: false, message: "Please Enter Valid Title"})
+        if (!isValidtitle(title)) return res.status(400).send({ status: false, message: "Please Enter Valid Title" })
         let uniqueTitle = await bookModel.findOne({ title: title })
         if (uniqueTitle) {
             return res.status(400).send({ status: false, message: "Book Title is already Existed" })
@@ -33,14 +35,14 @@ const createBook = async (req, res) => {
         if (!userId) return res.status(400).send({ status: false, message: "UserId is manadatory" })
 
         if (!ISBN) return res.status(400).send({ status: false, message: "ISBN is manadatory" })
-        if (!isValidISBN(ISBN)) return res.status(400).send({ status: false, message: "Please Enter Valid ISBN" })
+        if (!isValidISBN(ISBN)) return res.status(400).send({ status: false, message: "Please Enter Valid Standard ISBN [Ex: 904-2-30904-951-4]" })
         let uniqueISBN = await bookModel.findOne({ ISBN: ISBN })
         if (uniqueISBN) {
             return res.status(400).send({ status: false, message: "ISBN already exists" })
         }
 
         if (!category) return res.status(400).send({ status: false, message: "Category is manadatory" })
-        if (!isValid(category) || !isValidAdd(category) ) return res.status(400).send({ status: false, message: "Please Enter Valid Category" })
+        if (!isValid(category) || !isValidAdd(category)) return res.status(400).send({ status: false, message: "Please Enter Valid Category" })
 
         if (!subcategory) return res.status(400).send({ status: false, message: "Subcategory is manadatory" })
         if (!isValid(subcategory) || !isValidAdd(subcategory)) return res.status(400).send({ status: false, message: "Please Enter Valid Subcategory" })
@@ -65,27 +67,28 @@ const getBook = async (req, res) => {
     try {
         let data = req.query
 
-        if (isValidBody(data)) {
-            let getBooks = await bookModel.find({ isDeleted: false }).sort({ title: 1 }).select({ title: 1, excerpt: 1, userId: 1, category: 1, review: 1, releasedAt: 1 });
-            if (getBooks.length == 0)
-                return res.status(404).send({ status: false, msg: "No book found" })
-            return res.status(200).send({ status: true, count: getBooks.length, msg: "Book Lists", data: getBooks })
+        let { title, excerpt, userId, category } = data
+
+        if (data.hasOwnProperty("title") && !title) { return res.status(400).send({ status: false, message: "Please provide title" }) }
+        if (data.hasOwnProperty("excerpt") && !excerpt) { return res.status(400).send({ status: false, message: "Please provide excerpt" }) }
+        if (data.hasOwnProperty("userId") && !userId) { return res.status(400).send({ status: false, message: "Please provide userId" }) }
+        if (data.hasOwnProperty("category") && !category) { return res.status(400).send({ status: false, message: "Please provide category" }) }
+        if (userId) {
+            if (!isValidObjectId(userId)) { return res.status(400).send({ status: false, message: "Please Enter valid UserId" }) }
         }
 
         if (data.hasOwnProperty('userId')) {
-            if (!isValidObjectId(data.userId)) return res.status(400).send({ status: false, msg: "Enter valid user id" })
-            let { ...TempData } = data     //tempdata autometically recover the data from data base on temproary basis and deltet the data after rewsult
-            delete (TempData.userId)
+            let { ...tempData } = data   //tempdata autometically recover the data from data base on temproary basis and deltet the data after rewsult
+            delete (tempData.userId)
         }
 
         data.isDeleted = false
 
-
         let getFiltersBook = await bookModel.find(data).sort({ title: 1 }).select({ title: 1, excerpt: 1, userId: 1, category: 1, review: 1, releasedAt: 1 })
 
         if (getFiltersBook.length == 0)
-            return res.status(404).send({ status: false, msg: "no books found" })
-        res.status(200).send({ status: true, count: getFiltersBook.length, msg: "Books list", data: getFiltersBook })
+            return res.status(404).send({ status: false, message: "No Such Book Found" })
+        res.status(200).send({ status: true, count: getFiltersBook.length, message: "Books list", data: getFiltersBook })
 
 
     } catch (err) {
@@ -93,7 +96,6 @@ const getBook = async (req, res) => {
 
     }
 }
-
 
 
 //<<==================================== Get Books with Review By Book Id in params  =============================================//
@@ -131,8 +133,8 @@ const updateBook = async function (req, res) {
         if (!checkBookId) return res.status(400).send({ status: false, message: "Book not found" })
         if (checkBookId.isDeleted)
             return res.status(404).send({ status: false, message: "Book not found and may be deleted" })
-      
-           //body validation
+
+        //body validation
         let data = req.body
         if (isValidBody(data))
             return res.status(400).send({ status: false, message: "Data is requierd in body to update" })
@@ -140,24 +142,28 @@ const updateBook = async function (req, res) {
         if (data.hasOwnProperty('userId') || data.hasOwnProperty('review') || data.hasOwnProperty('isDeleted') || data.hasOwnProperty('deletedAt'))
             return res.status(400).send({ status: false, message: "Action Forfidden" })
 
-        if (data.hasOwnProperty('title')) {
-            let checkUniqueValue = await bookModel.findOne({ title: data.title })
-            if (checkUniqueValue) return res.status(400).send({ status: false, message: "Title already exists" })
+        let checkUniqueValue = await bookModel.findById(getBookId)
+
+        if (data.title) {
+            if (!isValidtitle(data.title)) return res.status(400).send({ status: false, message: "Please Enter Valid Title" })
+            if (checkUniqueValue.title == data.title) return res.status(400).send({ status: false, message: "Title already exists" })
         }
-        data.title = data.title.toUpperCase() 
-        if (data.hasOwnProperty('ISBN')) {
-            if (isValidISBN(data.ISBN)) {
-                return res.status(400).send({ status: false, message: "enter valid ISBN number" })
-            }
-            let checkUniqueValue = await bookModel.findOne({ ISBN: data.ISBN })
-            if (checkUniqueValue) return res.status(400).send({ statusbar: false, message: "ISBN already exists" })
+
+        if (data.ISBN) {
+            if (!isValidISBN(data.ISBN)) return res.status(400).send({ status: false, message: "enter valid ISBN number" })
+            if (checkUniqueValue.ISBN == data.ISBN) return res.status(400).send({ statusbar: false, message: "ISBN already exists" })
         }
-        if (isValidDate(data.releasedAt)) {
-            return res.status(400).send({ status: false, message: "Enter valid releaseAt date" })
+        if (data.releasedAt) {
+            if (!isValidDate(data.releasedAt))  return res.status(400).send({ status: false, message: "Enter valid releaseAt date" })
+            if (checkUniqueValue.releasedAt == data.releasedAt) return res.status(400).send({ statusbar: false, message: "ISBN already exists" })
         }
-        let updatebookData = await bookModel.findByIdAndUpdate(
-            { _id: getBookId }, data, { new: true })
-        return res.status(200).send({ status: true, message: "Book Updated Successfully", data: updatebookData })
+        if (data.excerpt) {
+            if (!isValid(data.excerpt) || !isValidAdd(data.excerpt)) return res.status(400).send({ status: false, message: "Please Enter Valid excerpt" })
+            if (checkUniqueValue.excerpt == data.excerpt) return res.status(400).send({ statusbar: false, message: "Excerpt already exists" })
+        }
+
+        let updateBookData = await bookModel.findByIdAndUpdate({ _id: getBookId }, data, { new: true })
+        return res.status(200).send({ status: true, message: "Book Updated Successfully", data: updateBookData })
 
 
     } catch (err) {
@@ -179,14 +185,14 @@ const deleteBook = async function (req, res) {
         // If is book present with given bookId
         let savedData = await bookModel.findById(bookId)
         if (!savedData) {
-            return res.status(404).send({status: true, message: "No such bookId is present" });
+            return res.status(404).send({ status: true, message: "No such bookId is present" });
         }
         //If book  is already deleted
         if (savedData.isDeleted)
             return res.status(404).send({ status: false, message: "Book not found... You have already deleted", });
 
         let updated = await bookModel.findByIdAndUpdate(savedData, { $set: { isDeleted: true, deletedAt: new Date() } });
-        res.status(200).send({status: true, message : "Book is  deleted sucessfully"});
+        res.status(200).send({ status: true, message: "Book is  deleted sucessfully" });
     } catch (error) {
         res.status(500).send({ status: false, message: error.message });
     }

@@ -29,7 +29,7 @@ const createReview = async (req, res) => {
             if (!(reviewedBy)) return res.status(400).send({ status: true, message: "Please provide Book Reviewer name" })
             if (!isValid(reviewedBy)) return res.status(400).send({ status: true, message: "Reviewer's Name Should be Alphabets Only" })
         }
-        reviewedBy = reviewedBy.toUpperCase() 
+        
 
         if (!review) return res.status(400).send({ status: false, message: "Please Enter Valid review" })
         if (!isValidReview(review)) return res.status(400).send({ status: true, message: "Review Should be Alphabets Only" })
@@ -85,20 +85,19 @@ const updateReview = async function (req, res) {
         let checkUniqValue = await reviewModel.findById(reviewId)  
         
         if (reviewedBy || reviewedBy === "") {
-            if (!isValidAdd(reviewedBy)) return res.status(400).send({ status: false, msg: "Please Enter Reviewer's Name!" })
-            if (!isValid(reviewedBy)) return res.status(400).send({ status: false, msg: "Please Enter Reviewer's Name Correctly!" })  
+            if (!isValidAdd(reviewedBy)) return res.status(400).send({ status: false, message: "Please Enter Reviewer's Name!" })
+            if (!isValid(reviewedBy)) return res.status(400).send({ status: false, message: "Please Enter Reviewer's Name Correctly!" })  
             if (checkUniqValue.reviewedBy === reviewedBy) return res.status(400).send({ status: false, message: "Reviewer's Name already exists" })
         }
-        reviewedBy = reviewedBy.toUpperCase() 
-        // console.log(reviewId)
+       
         if (rating || rating === "") {
-            if (!isValidRating(rating)) return res.status(400).send({ status: false, msg: "Please Enter Book Rating between 1-5 (not decimal)." })
+            if (!isValidRating(rating)) return res.status(400).send({ status: false, message: "Please Enter Book Rating between 1-5 (not decimal)." })
             if (checkUniqValue.rating == rating) return res.status(400).send({ status: false, message: "Rating already exists" })
         }
 
         if (review || review === "") {
-            if (!isValidAdd(review)) return res.status(400).send({ status: false, msg: "Please Enter Review!" })
-            if (!isValid(review)) return res.status(400).send({ status: false, msg: "Please Enter Review in Correct Format!" })
+            if (!isValidAdd(review)) return res.status(400).send({ status: false, message: "Please Enter Review!" })
+            if (!isValid(review)) return res.status(400).send({ status: false, message: "Please Enter Review in Correct Format!" })
             if (checkUniqValue.review === review) return res.status(400).send({ status: false, message: "Review already exists" })
         }
 
@@ -131,24 +130,24 @@ const deleteReview = async function (req, res) {
         let getId = req.params
 
         if (!isValidObjectId(getId.bookId))
-            return res.status(400).send({ status: false, msg: "Enter Valid Book Id" })
+            return res.status(400).send({ status: false, message: "Enter Valid Book Id" })
 
         if (!isValidObjectId(getId.reviewId))
-            return res.status(400).send({ status: false, msg: "Enter Valid review Id" })
+            return res.status(400).send({ status: false, message: "Enter Valid review Id" })
 
 
         let checkReviewId = await reviewModel.findById(getId.reviewId)
-        if (!checkReviewId) return res.status(404).send({ status: false, msg: "Review not found, Check your Id " })
+        if (!checkReviewId) return res.status(404).send({ status: false, message: "Review not found, Check your Id " })
 
         if (checkReviewId.bookId.toString() !== getId.bookId)
-            return res.status(404).send({ status: false, msg: "Book not found, check Id" })
+            return res.status(404).send({ status: false, message: "Book not found, check Id" })
 
         if (checkReviewId.isDeleted == true)
-            return res.status(404).send({ status: false, msg: "Review not found and already deleted" })
+            return res.status(404).send({ status: false, message: "Review not found and already deleted" })
 
         await reviewModel.updateOne({ _id: getId.reviewId }, { isDeleted: true }, { $inc: { review: -1 } })
 
-        return res.status(200).send({ status: true, msg: "Deleted Succesfully" })
+        return res.status(200).send({ status: true, message: "Deleted Succesfully" })
     } catch (err) {
         return res.status(500).send({ status: false, error: err.message })
     }

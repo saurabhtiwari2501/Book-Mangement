@@ -90,8 +90,7 @@ const userLogin = async (req, res) => {
             "Book-Management-Project", { expiresIn: '1h' });
 
         let decode = jwt.verify(token, "Book-Management-Project")
-    
-        return res.status(201).send({ status: true, message: "User Login Successfully", decode, token: token })
+        return res.status(201).send({ status: true, message: "User Login Successfully",decode, token: token })
 
     }
     catch (err) {
